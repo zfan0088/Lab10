@@ -1,45 +1,53 @@
 <script setup>
-import JSONLab from './components/JSONLab.vue'
-import BHeader from './components/BHeader.vue'
-import LibraryRegistrationForm from './components/LibraryRegistrationForm.vue'
+import { ref } from 'vue'
+import { RouterLink, RouterView, useRouter } from 'vue-router'
+
+const router = useRouter()
+const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true')
+
+// 监听路由变化，实时更新导航栏的登录状态
+router.beforeEach((to, from, next) => {
+  isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true'
+  next()
+})
+
+const logout = () => {
+  // 清除登录状态
+  localStorage.removeItem('isAuthenticated')
+  isAuthenticated.value = false
+  // 注销后跳回登录页或首页
+  router.push('/login')
+}
 </script>
 
 <template>
-  <header>
-    <BHeader />
-  </header>
+  <div class="container">
+    <header class="mt-4 mb-4">
+      <nav class="text-center">
+        <RouterLink to="/" class="me-3">Home</RouterLink>
+        <RouterLink to="/about" class="me-3">About (Members Only)</RouterLink>
+        
+        <!-- 条件渲染：未登录显示 Login，已登录显示 Logout -->
+        <RouterLink v-if="!isAuthenticated" to="/login" class="me-3">Login</RouterLink>
+        <button v-if="isAuthenticated" @click="logout" class="btn btn-sm btn-outline-danger">Logout</button>
+      </nav>
+    </header>
 
-  <main>
-    <LibraryRegistrationForm />
-    <!-- <JSONLab /> -->
-  </main>
+    <main class="main-content">
+      <RouterView />
+    </main>
+  </div>
 </template>
 
 <style scoped>
-/* header {
-  line-height: 1.5;
+nav a {
+  text-decoration: none;
+  font-size: 1.2rem;
+  color: #275fda;
+  font-weight: bold;
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+nav a.router-link-exact-active {
+  color: #000;
+  text-decoration: underline;
 }
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-} */
 </style>

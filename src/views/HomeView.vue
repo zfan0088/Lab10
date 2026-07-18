@@ -6,7 +6,7 @@ import Column from 'primevue/column'
 const formData = ref({
   username: '',
   password: '',
-  confirmPassword: '', // 5.3.1 确认密码字段
+  confirmPassword: '', // 确认密码字段
   isAustralian: false,
   reason: '',
   gender: '',
@@ -18,8 +18,8 @@ const submittedCards = ref([])
 const submitForm = () => {
   validateName(true)
   validatePassword(true)
-  validateConfirmPassword(true) // 5.3.1 提交时触发验证
-  validateReason(true)          // 5.3.2 提交时触发验证
+  validateConfirmPassword(true) // 提交时触发验证
+  validateReason(true)          // 提交时触发验证
   
   // 确保所有字段都没有错误时才允许提交
   if (
@@ -57,10 +57,10 @@ const clearForm = () => {
 const errors = ref({
   username: null,
   password: null,
-  confirmPassword: null, // 5.3.1 错误状态
+  confirmPassword: null, // 错误状态
   resident: null,
   gender: null,
-  reason: null           // 5.3.2 错误状态
+  reason: null           // 错误状态
 })
 
 const validateName = (blur) => {
@@ -94,7 +94,7 @@ const validatePassword = (blur) => {
   }
 }
 
-// 5.3.1 确认密码验证逻辑
+// 确认密码验证逻辑
 const validateConfirmPassword = (blur) => {
   if (formData.value.password !== formData.value.confirmPassword) {
     if (blur) errors.value.confirmPassword = 'Passwords do not match.'
@@ -103,7 +103,7 @@ const validateConfirmPassword = (blur) => {
   }
 }
 
-// 5.3.2 新增：加入原因验证逻辑
+// 加入原因验证逻辑
 const validateReason = (blur) => {
   if (formData.value.reason.length < 10) {
     if (blur) errors.value.reason = 'Please must be at least 10 characters'
@@ -193,7 +193,7 @@ const validateReason = (blur) => {
             </div>
           </div>
 
-          <!-- 5.3.2 修改后的 Reason 区域 -->
+          <!-- 修改后的 Reason 区域 -->
           <div class="mb-3">
             <label for="reason" class="form-label">Reason for joining</label>
             <textarea

@@ -1,22 +1,27 @@
 <script setup>
 import { ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { getAuth, signOut } from 'firebase/auth'
 
 const router = useRouter()
 const isAuthenticated = ref(localStorage.getItem('isAuthenticated') === 'true')
 
-// 监听路由变化，实时更新导航栏的登录状态
 router.beforeEach((to, from, next) => {
   isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true'
   next()
 })
 
 const logout = () => {
-  // 清除登录状态
-  localStorage.removeItem('isAuthenticated')
-  isAuthenticated.value = false
-  // 注销后跳回登录页或首页
-  router.push('/login')
+  const auth = getAuth()
+  signOut(auth).then(() => {
+    console.log("Logout Successful!")
+    console.log("Current User after logout:", auth.currentUser) // 打印 null
+    localStorage.removeItem('isAuthenticated')
+    isAuthenticated.value = false
+    router.push('/FireLogin')
+  }).catch((error) => {
+    console.log(error.code)
+  })
 }
 </script>
 
@@ -26,10 +31,9 @@ const logout = () => {
       <nav class="text-center">
         <RouterLink to="/" class="me-3">Home</RouterLink>
         <RouterLink to="/about" class="me-3">About (Members Only)</RouterLink>
-        
-        <!-- 条件渲染：未登录显示 Login，已登录显示 Logout -->
-        <RouterLink v-if="!isAuthenticated" to="/login" class="me-3">Login</RouterLink>
-        <button v-if="isAuthenticated" @click="logout" class="btn btn-sm btn-outline-danger">Logout</button>
+        <RouterLink to="/FireRegister" class="me-3">Firebase Register</RouterLink>
+        <RouterLink to="/FireLogin" class="me-3">Firebase Login</RouterLink>
+        <button v-if="isAuthenticated" @click="logout" class="btn btn-sm btn-outline-danger ms-2">Logout</button>
       </nav>
     </header>
 

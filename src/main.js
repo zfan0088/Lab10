@@ -7,7 +7,7 @@ import router from './router'
 import PrimeVue from 'primevue/config'
 import Aura from '@primevue/themes/aura'
 
-// ✨ 引入 Firebase
+
 import { initializeApp } from 'firebase/app'
 
 const app = createApp(App)

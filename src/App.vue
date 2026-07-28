@@ -14,13 +14,13 @@ router.beforeEach((to, from, next) => {
 const logout = () => {
   const auth = getAuth()
   signOut(auth).then(() => {
-    console.log("Logout Successful!")
-    console.log("Current User after logout:", auth.currentUser) // 打印 null
+    console.log('Firebase Sign-out successful.')
+    console.log('Current User after logout:', auth.currentUser)
     localStorage.removeItem('isAuthenticated')
     isAuthenticated.value = false
     router.push('/FireLogin')
   }).catch((error) => {
-    console.log(error.code)
+    console.error('Logout Error:', error)
   })
 }
 </script>
@@ -29,10 +29,12 @@ const logout = () => {
   <div class="container">
     <header class="mt-4 mb-4">
       <nav class="text-center">
-        <RouterLink to="/" class="me-3">Home</RouterLink>
-        <RouterLink to="/about" class="me-3">About (Members Only)</RouterLink>
-        <RouterLink to="/FireRegister" class="me-3">Firebase Register</RouterLink>
+        <RouterLink to="/" class="me-3">Home</RouterLink> |
+        <RouterLink to="/about" class="me-3">About</RouterLink> |
+        <RouterLink to="/addbook" class="me-3 text-success">Add Book</RouterLink> | <!-- ✨ 新增的 Add Book 链接 -->
+        <RouterLink to="/FireRegister" class="me-3">Firebase Register</RouterLink> |
         <RouterLink to="/FireLogin" class="me-3">Firebase Login</RouterLink>
+        
         <button v-if="isAuthenticated" @click="logout" class="btn btn-sm btn-outline-danger ms-2">Logout</button>
       </nav>
     </header>
@@ -46,12 +48,12 @@ const logout = () => {
 <style scoped>
 nav a {
   text-decoration: none;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #275fda;
-  font-weight: bold;
+  margin: 0 8px;
 }
 nav a.router-link-exact-active {
   color: #000;
-  text-decoration: underline;
+  font-weight: bold;
 }
 </style>

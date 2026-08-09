@@ -36,6 +36,8 @@ const logout = () => {
         <RouterLink to="/addbook" class="me-3 text-success">Add Book</RouterLink> |
         <RouterLink to="/WeatherCheck" class="me-3">Get Weather</RouterLink> |
         <RouterLink to="/CountBookAPI" class="me-3">Count Book API</RouterLink> |
+        <RouterLink to="/GetBookCount" class="me-3">Get Book Count</RouterLink> |
+        <RouterLink to="/BookStore" class="me-3">Book Store</RouterLink> |
         <RouterLink to="/FireLogin" class="me-3">Firebase Login</RouterLink> |
         <RouterLink to="/FireRegister" class="me-3">Firebase Register</RouterLink>
 

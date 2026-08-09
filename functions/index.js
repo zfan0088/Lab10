@@ -1,32 +1,40 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const {onRequest} = require("firebase-functions/v2/https");
+const admin = require("firebase-admin");
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+admin.initializeApp();
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+exports.countBooks = onRequest({cors: true}, async (req, res) => {
+  try {
+    const booksCollection = admin.firestore().collection("books");
+    const snapshot = await booksCollection.get();
+    const count = snapshot.size;
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+    res.status(200).send({count});
+  } catch (error) {
+    res.status(500).send("Error counting books");
+  }
+});
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+exports.bookStore = onRequest({cors: true}, async (req, res) => {
+  try {
+    const snapshot = await admin.firestore().collection("books").get();
+    const books = snapshot.docs.map((doc, index) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data.name,
+        isbn: data.isbn,
+        price: Number((9.99 + index * 2.5).toFixed(2)),
+        message: `Buy ${data.name} today from NoMash Library`
+      };
+    });
+
+    res.status(200).send({
+      success: true,
+      total: books.length,
+      books
+    });
+  } catch (error) {
+    res.status(500).send("Error loading book store");
+  }
+});
